@@ -1,0 +1,1 @@
+python3 detect.py --weights <pt file> --source ./input.png --project freshness --name out
