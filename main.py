@@ -4,7 +4,6 @@ import cv2
 
 app = Flask(__name__)
 
-@app.route("/takepic")
 def capture():
     cap = cv2.VideoCapture(0)
     _,frame = cap.read() 
@@ -16,6 +15,8 @@ def capture():
 @app.route("/detect",methods=['GET','POST'])
 def detect_image():
     fruit = request.form['fruit']
+    capture()
+    subprocess.run(["rm","-rf","freshness/out"])
     subprocess.run(["python3",
                    "detect.py",
                    "--weights",
@@ -26,7 +27,7 @@ def detect_image():
                    "freshness",
                    "--name",
                    "out"])
-    return "Detectiong done"
+    return "Detections done"
 
 @app.route("/show")
 def show_image():
