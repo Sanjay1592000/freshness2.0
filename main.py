@@ -1,8 +1,8 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import subprocess
 import cv2
 
-app = Flask(__name__)
+app = Flask(__name__,static_url_path='/static')
 
 def capture():
     cap = cv2.VideoCapture(0)
@@ -11,6 +11,9 @@ def capture():
     cap.release()
     return "Photo Done"
 
+@app.route('/img')
+def send_report(path):
+    return send_from_directory("freshness",path)
 
 @app.route("/detect",methods=['GET','POST'])
 def detect_image():
@@ -27,12 +30,8 @@ def detect_image():
                    "freshness",
                    "--name",
                    "out"])
-    return "Detections done"
-
-@app.route("/show")
-def show_image():
+    subprocess.run(["cp","freshness/out/input.png","static"])
     return render_template('out.html')
-
 
 @app.route("/")
 def render_main():
