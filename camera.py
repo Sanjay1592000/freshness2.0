@@ -42,7 +42,7 @@ def distance_of_two(cord_1,cord_2):
         send_revert()
 
 def take_photo():
-    img = 
+    img =
 
 while True:
     img = cv2.imread(FRAME_SOURCE)
