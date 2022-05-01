@@ -79,7 +79,7 @@ def send_report(path):
 def get_sensor_data():
     mq2_val = GPIO.input(mq2_pin)
     mq15_val = GPIO.input(mq15_pin)
-    return string(mq2_val) + string(mq15_val)
+    return str(mq2_val) + str(mq15_val)
 
 
 @app.route("/detect", methods=['GET', 'POST'])
