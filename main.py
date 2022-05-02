@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory, Response
 import subprocess
+import numpy as np
 import tflite_runtime.interpreter as tflite
 import cv2
 import RPi.GPIO as GPIO
