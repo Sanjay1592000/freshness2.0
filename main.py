@@ -18,7 +18,6 @@ GPIO.setup(mq15_pin, GPIO.IN)
 @app.route('/move')
 def move_camera():
     p = GPIO.PWM(servoPIN, 50)  # GPIO 17 for PWM with 50Hz
-    p.start(2.5)  # Initialization
     try:
         while True:
             p.ChangeDutyCycle(2.5)
@@ -90,7 +89,8 @@ def detect_image():
     subprocess.run(["rm", "-rf", "freshness/out"])
     subprocess.run([
         "python3", "detect.py", "--weights", fruit + ".pt", "--source",
-        "input.png", "--project", "freshness", "--name", "out"
+        "http://raspberrypi.local:5000/live", "--project", "freshness",
+        "--name", "out"
     ])
     subprocess.run(["cp", "freshness/out/input.png", "static"])
     return render_template('out.html')
