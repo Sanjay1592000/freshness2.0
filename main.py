@@ -44,18 +44,17 @@ def move_camera():
         GPIO.cleanup()
 
 
-def gen_frames():
-    while True:
-        succ, frame = cam.read()
-        if not succ:
-            break
-        else:
-            ret, buff = cv2.imencode('.jpg', frame)
-            frame = buff.tobytes()
-            yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + bytearray(frame) +
-                   b'\r\n')
-
+# def gen_frames():
+#     while True:
+#         succ, frame = cam.read()
+#         if not succ:
+#             break
+#         else:
+#             ret, buff = cv2.imencode('.jpg', frame)
+#             frame = buff.tobytes()
+#             yield (b'--frame\r\n'
+#                    b'Content-Type: image/jpeg\r\n\r\n' + bytearray(frame) +
+#                    b'\r\n')
 
 # @app.route('/live')
 # def video_feed():
@@ -64,9 +63,10 @@ def gen_frames():
 
 
 def capture():
-    _, frame = cam.read()
+    ret, frame = cam.read()
     subprocess.run(["rm", "./input.png"])
-    cv2.imwrite('./input.png', frame)
+    if (ret):
+        cv2.imwrite('./input.png', frame)
     cam.release()
     return "Photo Done"
 
@@ -91,7 +91,7 @@ def detect_image():
     subprocess.run(["rm", "-rf", "freshness/out"])
     subprocess.run([
         "python3", "detect.py", "--weights", fruit + ".pt", "--source",
-        "input.png", "--project", "freshness", "--name", "out"
+        "input.png", "--hide-conf", "--project", "freshness", "--name", "out"
     ])
     subprocess.run(["cp", "freshness/out/input.png", "static"])
     return render_template('out.html')
