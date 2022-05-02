@@ -46,9 +46,6 @@
       Welcome to FFD dashboard, Detect the freshness of
       <em>Apple, Orange, Banana</em>
     </p>
-    <div>
-      <img src="/live" alt="" />
-    </div>
     <div class="list">
       <div class="form">
         <form action="/detect" method="post" class="list">
@@ -56,21 +53,17 @@
           <button type="submit" class="btn">Detect</button>
         </form>
       </div>
+      <a href="/sensor">Read Sensor</a>
     </div>
-    <div>
-      <a href="/sensor">Get Sensor value</a>
-    </div>
+    <div></div>
     <div class="output" id="output">
       <img src="../freshness/out/input.png" alt="" />
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <script>
-      let outputScreen = document.getElementById("output");
-      outputScreen.style.visibility = "hidden";
-      outputScreen.style.display = "none";
-      const openOutput = () => {
-        outputScreen.style.visibility = "visible";
-        outputScreen.style.display = "block";
-      };
+      axios.post("url", { name: "data" }).then(function (response) {
+        console.log(response);
+      });
     </script>
   </body>
 </html>

@@ -14,6 +14,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(servoPIN, GPIO.OUT)
 GPIO.setup(mq2_pin, GPIO.IN)
 GPIO.setup(mq15_pin, GPIO.IN)
+count = 0
 
 
 @app.route('/move')
@@ -53,13 +54,14 @@ def make_prediction():
     # interpreter = tflite.Interpreter(model_path="model_unquant.tflite")
     interpreter.allocate_tensors()
     _, img = _c.read()
-    img = cv2.resize(img, (128, 128))
+    img = cv2.resize(img, (128, 128), cv2.INTER_AREA)
     input_tensor = np.array(np.expand_dims(img, 0), dtype=np.float32)
     input_index = interpreter.get_input_details()[0]["index"]
     interpreter.set_tensor(input_index, input_tensor)
     interpreter.invoke()
     output_details = interpreter.get_output_details()
     output_data = interpreter.get_tensor(output_details[0]['index'])
+    print(output_details)
     pred = np.squeeze(output_data)
     print(pred)
     return str(pred)
@@ -102,10 +104,10 @@ def send_report(path):
 def get_sensor_data():
     mq2_val = GPIO.input(mq2_pin)
     mq15_val = GPIO.input(mq15_pin)
-    return str(mq2_val) + str(mq15_val)
+    return "<h2>Sensor Value</h2> <br> <p> MQ2 Sensor Value = " + str(
+        mq2_val) + "</p> <br> <p> MQ135 Value = " + str(mq15_val) + "</p>"
 
 
-@app.route("/detect", methods=['GET', 'POST'])
 def detect_image():
     fruit = request.form['fruit']
     capture()
