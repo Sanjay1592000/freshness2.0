@@ -5,7 +5,6 @@ import RPi.GPIO as GPIO
 import time
 
 app = Flask(__name__, static_url_path='/static')
-cam = cv2.VideoCapture(0)
 servoPIN = 17
 mq2_pin = 23
 mq15_pin = 10
@@ -63,6 +62,7 @@ def move_camera():
 
 
 def capture():
+    cam = cv2.VideoCapture(0)
     ret, frame = cam.read()
     subprocess.run(["rm", "./input.png"])
     if (ret):
