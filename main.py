@@ -108,7 +108,7 @@ def get_sensor_data():
         mq2_val) + "</p> <br> <p> MQ135 Value = " + str(mq15_val) + "</p>"
 
 
-@app.route('/detect', methods=['POST', 'GET'])
+@app.route('/detect', methods=['GET','POST'])
 def detect_image():
     fruit = request.form['fruit']
     capture()
