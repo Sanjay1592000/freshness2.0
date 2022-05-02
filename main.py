@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, send_from_directory, Response
 import subprocess
+import tflite_runtime.interpreter as tflite
 import cv2
 import RPi.GPIO as GPIO
 import time
@@ -41,6 +42,25 @@ def move_camera():
     except KeyboardInterrupt:
         p.stop()
         GPIO.cleanup()
+
+
+@app.route("/pred")
+def make_prediction():
+    _c = cv2.VideoCapture(0)
+    # Load the model
+    interpreter = tflite.Interpreter(model_path="model_densenet.tflite")
+    # interpreter = tflite.Interpreter(model_path="model_unquant.tflite")
+    interpreter.allocate_tensors()
+    _, img = _c.read()
+    img = cv2.resize(img, (224, 224))
+    input_tensor = np.array(np.expand_dims(img, 0), dtype=np.float32)
+    input_index = interpreter.get_input_details()[0]["index"]
+    interpreter.set_tensor(input_index, input_tensor)
+    interpreter.invoke()
+    output_details = interpreter.get_output_details()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    pred = np.squeeze(output_data)
+    return pred
 
 
 # def gen_frames():
