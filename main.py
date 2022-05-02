@@ -61,7 +61,8 @@ def make_prediction():
     output_details = interpreter.get_output_details()
     output_data = interpreter.get_tensor(output_details[0]['index'])
     pred = np.squeeze(output_data)
-    return pred
+    print(pred)
+    return str(pred)
 
 
 # def gen_frames():
