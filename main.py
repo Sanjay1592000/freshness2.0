@@ -65,6 +65,7 @@ def gen_frames():
 
 def capture():
     _, frame = cam.read()
+    subprocess.run(["rm", "./input.png"])
     cv2.imwrite('./input.png', frame)
     cam.release()
     return "Photo Done"
