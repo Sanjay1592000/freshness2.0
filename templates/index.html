@@ -60,11 +60,16 @@
     <div class="output" id="output">
       <img src="../freshness/out/input.png" alt="" />
     </div>
+    <div>
+      <input type="text" id="angleVal" />
+      <button onclick="moveAngle()">Move Camera</button>
+    </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <script>
-      axios.post("url", { name: "data" }).then(function (response) {
-        console.log(response);
-      });
+      function moveAngle() {
+        let angle = document.getElementById("angleVal").value;
+        axios.get("http://raspberrypi.local:5000/move?="+angle);
+      }
     </script>
   </body>
 </html>
