@@ -15,28 +15,134 @@
       :root {
         font-family: "Roboto", sans-serif;
       }
-      .btn {
+      body {
+        background: linear-gradient(
+          90deg,
+          #067056 -46.11%,
+          rgba(255, 255, 255, 0.99) 52.53%
+        );
+      }
+      h1,
+      p {
+        text-align: right;
+        position: relative;
+        padding: 20px;
+        color: #067056;
+        animation: transition1 1000ms;
+      }
+      h1 {
+        top: 125px;
+      }
+      p {
+        top: 150px;
+      }
+      .btn,
+      .move {
+        position: relative;
         display: block;
         border: none;
         padding: 1rem;
         margin: 0.5rem;
         font-size: 1rem;
         font-weight: bold;
-        background-color: #9900f0;
+        background-color: #067056;
         text-decoration: none;
         border-radius: 10px;
+        border: solid 2px white;
         color: #fff;
+        transition: 0.5s;
+      }
+      .btn:hover,
+      .sensor:hover,
+      .move:hover {
+        border-color: #067056;
+        background-color: white;
+        color: #067056;
+        transition: 1s;
       }
       .text-box {
+        position: relative;
         padding: 1rem;
+        margin: 0.5rem;
+        font-size: 1rem;
         border-radius: 10px;
-        border: 2px solid #000;
+        border: 2px solid #067056;
+      }
+      .last {
+        position: relative;
+        justify-content: right;
+        animation: transition 1000ms;
       }
       .list {
+        position: relative;
+        top: 175px;
         display: flex;
         flex-direction: row;
-        justify-content: center;
         align-items: center;
+        justify-content: right;
+      }
+      .sensor {
+        position: relative;
+        background-color: #067056;
+        height: 25px;
+        width: 100px;
+        top: 190px;
+        left: -108px;
+        text-align: center;
+        transition: 0.5s;
+        justify-content: right;
+      }
+      a {
+        color: #fff;
+        font-style: none;
+        transition: 0.5s;
+      }
+      a:hover {
+        color: #067056;
+        transition: 1s;
+      }
+      .angle {
+        position: relative;
+        display: flex;
+        align-items: center;
+        left: -98px;
+        top: 200px;
+        justify-content: right;
+      }
+      #angleVal {
+        border: 2px solid #067056;
+        border-radius: 10px;
+        height: 40px;
+        width: 100px;
+      }
+      #fruitBox {
+        position: relative;
+        left: 95vw;
+        top: 1px;
+        height: 3px;
+        width: 15px;
+        margin: 1rem;
+        background-color: #ff8c8c;
+      }
+      @keyframes transition {
+        from {
+          opacity: 0;
+          transform: translateY(-150px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0px);
+        }
+      }
+      @keyframes transition1 {
+        from {
+          opacity: 0;
+          transform: translateY(-75px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0px);
+        }
       }
     </style>
   </head>
@@ -46,30 +152,52 @@
       Welcome to FFD dashboard, Detect the freshness of
       <em>Apple, Orange, Banana</em>
     </p>
-    <div class="list">
+    <div class="last">
+      <div id="fruitBox"></div>
       <div class="form">
         <form action="/detect" method="post" class="list">
           <input type="text" name="fruit" id="fruit" class="text-box" />
           <button type="submit" class="btn">Detect</button>
+          <div class="sensor">
+            <b><a href="/sensor">Read Sensor</a></b>
+          </div>
         </form>
       </div>
+
+      <div class="angle">
+        <input type="text" id="angleVal" />
+        <button onclick="moveAngle()" class="move">Move Camera</button>
+      </div>
     </div>
-    <div>
-      <a href="/sensor">Read Sensor</a>
-    </div>
+
     <div class="output" id="output">
       <img src="../freshness/out/input.png" alt="" />
-    </div>
-    <div>
-      <input type="text" id="angleVal" />
-      <button onclick="moveAngle()">Move Camera</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.27.2/axios.min.js"></script>
     <script>
       function moveAngle() {
         let angle = document.getElementById("angleVal").value;
-        axios.get("http://raspberrypi.local:5000/move?angle="+angle);
+        axios.get("http://raspberrypi.local:5000/move?angle=" + angle);
       }
+
+      async function getFruit() {
+        let fruitBox = document.getElementById("fruitBox");
+        let { data } = await axios.get("http://localhost:5000/getFruit");
+        console.log("data from /getfruit is ", data);
+        if (data.curr == 0) {
+          //apple
+          fruitBox.style.backgroundColor = "#FF8C8C";
+        } else if (data.curr == 1) {
+          fruitBox.style.backgroundColor = "#FFE69A";
+        } else if (data.curr == 2) {
+          fruitBox.style.backgroundColor = "#9772FB";
+        }
+      }
+
+      setInterval(() => {
+        console.log("running");
+        getFruit();
+      }, 2000);
     </script>
   </body>
 </html>

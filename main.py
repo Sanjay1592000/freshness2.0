@@ -6,6 +6,8 @@ import cv2
 import RPi.GPIO as GPIO
 import time
 
+fruitc = 0
+
 app = Flask(__name__, static_url_path='/static')
 servoPIN = 17
 mq2_pin = 23
@@ -25,7 +27,7 @@ def move_camera():
     p.start(2.5)  # Initialization
     try:
         while True:
-            p.ChangeDutyCycle(angle/18.0) + 2.5
+            p.ChangeDutyCycle(angle / 18.0) + 2.5
             time.sleep(2)
     except KeyboardInterrupt:
         p.stop()
@@ -50,7 +52,16 @@ def make_prediction():
     print(output_details)
     pred = np.squeeze(output_data)
     print(pred)
+    fruit += 1
+    if (fruit >= 3):
+        fruit = 0
     return str(pred)
+
+
+@app.route("/getFruit")
+def send_f():
+    global fruitc
+    return {"curr": fruitc}
 
 
 # def gen_frames():
@@ -94,8 +105,9 @@ def get_sensor_data():
         mq2_val) + "</p> <br> <p> MQ135 Value = " + str(mq15_val) + "</p>"
 
 
-@app.route('/detect', methods=['GET','POST'])
+@app.route('/detect', methods=['GET', 'POST'])
 def detect_image():
+    global fruitc
     fruit = request.form['fruit']
     capture()
     subprocess.run(["rm", "static/input.png"])
@@ -105,6 +117,9 @@ def detect_image():
         "input.png", "--hide-conf", "--project", "freshness", "--name", "out"
     ])
     subprocess.run(["cp", "freshness/out/input.png", "static"])
+    fruitc += 1
+    if (fruitc >= 3):
+        fruitc = 0
     return render_template('out.html')
 
 
