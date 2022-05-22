@@ -3,7 +3,7 @@ import subprocess
 import numpy as np
 import tflite_runtime.interpreter as tflite
 import cv2
-# import RPi.GPIO as GPIO
+import RPi.GPIO as GPIO
 import time
 
 models = ["apple.pt", "banana.pt", "orange.pt"]
@@ -14,25 +14,25 @@ app = Flask(__name__, static_url_path='/static')
 servoPIN = 17
 mq2_pin = 23
 mq15_pin = 10
-# GPIO.setmode(GPIO.BCM)
-# GPIO.setup(servoPIN, GPIO.OUT)
-# GPIO.setup(mq2_pin, GPIO.IN)
-# GPIO.setup(mq15_pin, GPIO.IN)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(servoPIN, GPIO.OUT)
+GPIO.setup(mq2_pin, GPIO.IN)
+GPIO.setup(mq15_pin, GPIO.IN)
 count = 0
 
-# @app.route('/move')
-# def move_camera():
-#     angle = request.args.get('angle')
-#     angle = int(angle)
-#     p = GPIO.PWM(servoPIN, 50)  # GPIO 17 for PWM with 50Hz
-#     p.start(2.5)  # Initialization
-#     try:
-#         while True:
-#             p.ChangeDutyCycle(angle / 18.0) + 2.5
-#             time.sleep(2)
-#     except KeyboardInterrupt:
-#         p.stop()
-#         GPIO.cleanup()
+@app.route('/move')
+def move_camera():
+    angle = request.args.get('angle')
+    angle = int(angle)
+    p = GPIO.PWM(servoPIN, 50)  # GPIO 17 for PWM with 50Hz
+    p.start(2.5)  # Initialization
+    try:
+        while True:
+            p.ChangeDutyCycle(angle / 18.0) + 2.5
+            time.sleep(2)
+    except KeyboardInterrupt:
+        p.stop()
+        GPIO.cleanup()
 
 
 @app.route("/pred")
