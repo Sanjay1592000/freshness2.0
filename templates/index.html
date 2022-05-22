@@ -93,9 +93,10 @@
         justify-content: right;
       }
       a {
-        color: #fff;
+        color: #067056;
         font-style: none;
         transition: 0.5s;
+        text-decoration: none;
       }
       a:hover {
         color: #067056;
@@ -150,7 +151,8 @@
     <h1>Food Freshness Detection</h1>
     <p>
       Welcome to FFD dashboard, Detect the freshness of
-      <em>Apple, Orange, Banana</em>
+      <a href="/detectApple">Apple</a>, <a href="/detectApple">Orange</a>,
+      <a href="/detectBanana">Banana</a>
     </p>
     <div class="last">
       <div id="fruitBox"></div>
@@ -182,7 +184,9 @@
 
       async function getFruit() {
         let fruitBox = document.getElementById("fruitBox");
-        let { data } = await axios.get("http://localhost:5000/getFruit");
+        let { data } = await axios.get(
+          "http://raspberrypi.local:5000/getFruit"
+        );
         console.log("data from /getfruit is ", data);
         if (data.curr == 0) {
           //apple

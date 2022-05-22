@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,send_file, send_from_directory, Response
+from flask import Flask, render_template, request, send_file, send_from_directory, Response
 import subprocess
 import numpy as np
 import tflite_runtime.interpreter as tflite
@@ -19,7 +19,6 @@ mq15_pin = 10
 # GPIO.setup(mq2_pin, GPIO.IN)
 # GPIO.setup(mq15_pin, GPIO.IN)
 count = 0
-
 
 # @app.route('/move')
 # def move_camera():
@@ -134,6 +133,36 @@ def detect_image():
     fruitc += 1
     if (fruitc >= 3):
         fruitc = 0
+    return render_template('out.html')
+
+
+@app.route('/detectBanana', methods=['GET', 'POST'])
+def detect_image():
+    global fruitc
+    fruit = models[fruitc]
+    capture()
+    subprocess.run(["rm", "static/input.png"])
+    subprocess.run(["rm", "-rf", "freshness/out"])
+    subprocess.run([
+        "python3", "detect.py", "--weights", "banana.pt", "--source",
+        "input.png", "--hide-conf", "--project", "freshness", "--name", "out"
+    ])
+    subprocess.run(["cp", "freshness/out/input.png", "static"])
+    return render_template('out.html')
+
+
+@app.route('/detectApple', methods=['GET', 'POST'])
+def detect_image():
+    global fruitc
+    fruit = models[fruitc]
+    capture()
+    subprocess.run(["rm", "static/input.png"])
+    subprocess.run(["rm", "-rf", "freshness/out"])
+    subprocess.run([
+        "python3", "detect.py", "--weights", "apple.apple.pt", "--source",
+        "input.png", "--hide-conf", "--project", "freshness", "--name", "out"
+    ])
+    subprocess.run(["cp", "freshness/out/input.png", "static"])
     return render_template('out.html')
 
 
