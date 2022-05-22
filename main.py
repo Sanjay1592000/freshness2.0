@@ -6,6 +6,7 @@ import cv2
 import RPi.GPIO as GPIO
 import time
 
+models = ["apple.pt", "banana.pt", "orange.pt"]
 fruitc = 0
 sensor_data = {sensor: 0, humid: 0, temp: 0}
 
@@ -121,13 +122,13 @@ def put_sensor_data():
 @app.route('/detect', methods=['GET', 'POST'])
 def detect_image():
     global fruitc
-    fruit = request.form['fruit']
+    fruit = models[fruitc]
     capture()
     subprocess.run(["rm", "static/input.png"])
     subprocess.run(["rm", "-rf", "freshness/out"])
     subprocess.run([
-        "python3", "detect.py", "--weights", fruit + ".pt", "--source",
-        "input.png", "--hide-conf", "--project", "freshness", "--name", "out"
+        "python3", "detect.py", "--weights", fruit, "--source", "input.png",
+        "--hide-conf", "--project", "freshness", "--name", "out"
     ])
     subprocess.run(["cp", "freshness/out/input.png", "static"])
     fruitc += 1
