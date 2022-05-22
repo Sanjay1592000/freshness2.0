@@ -8,7 +8,7 @@ import time
 
 models = ["apple.pt", "banana.pt", "orange.pt"]
 fruitc = 0
-sensor_data = {sensor: 0, humid: 0, temp: 0}
+sensor_data = {"sensor": 0, "humid": 0, "temp": 0}
 
 app = Flask(__name__, static_url_path='/static')
 servoPIN = 17
