@@ -159,7 +159,7 @@ def detect_apple():
     subprocess.run(["rm", "static/input.png"])
     subprocess.run(["rm", "-rf", "freshness/out"])
     subprocess.run([
-        "python3", "detect.py", "--weights", "apple.apple.pt", "--source",
+        "python3", "detect.py", "--weights", "apple.pt", "--source",
         "input.png", "--hide-conf", "--project", "freshness", "--name", "out"
     ])
     subprocess.run(["cp", "freshness/out/input.png", "static"])
