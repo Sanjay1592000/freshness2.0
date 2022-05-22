@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 import time
 
 fruitc = 0
+sensor_data = {sensor: 0, humid: 0, temp: 0}
 
 app = Flask(__name__, static_url_path='/static')
 servoPIN = 17
@@ -97,12 +98,24 @@ def send_report(path):
     return send_from_directory("freshness", path)
 
 
-@app.route("/sensor")
+@app.route("/hook", methods=['POST'])
 def get_sensor_data():
+    global sensor_data
+    print("Got Data From ESP8266")
+    sensor_data["sensor"] = request.get_json()['sensor']
+    sensor_data["humid"] = request.get_json()['humid']
+    sensor_data["temp"] = request.get_json()['temp']
+    return "thanks"
+
+
+@app.route("/sensor")
+def put_sensor_data():
     mq2_val = GPIO.input(mq2_pin)
     mq15_val = GPIO.input(mq15_pin)
-    return "<h2>Sensor Value</h2> <br> <p> MQ2 Sensor Value = " + str(
-        mq2_val) + "</p> <br> <p> MQ135 Value = " + str(mq15_val) + "</p>"
+    return render_template('sensor.html',
+                           sensor=sensor_data["sensor"],
+                           temp=sensor_data["temp"],
+                           humid=sensor_data["humid"])
 
 
 @app.route('/detect', methods=['GET', 'POST'])
