@@ -135,6 +135,20 @@ def detect_image():
         fruitc = 0
     return render_template('out.html')
 
+@app.route('/detectOrange', methods=['GET', 'POST'])
+def detect_image():
+    global fruitc
+    fruit = models[fruitc]
+    capture()
+    subprocess.run(["rm", "static/input.png"])
+    subprocess.run(["rm", "-rf", "freshness/out"])
+    subprocess.run([
+        "python3", "detect.py", "--weights", "orange.pt", "--source", "input.png",
+        "--hide-conf", "--project", "freshness", "--name", "out"
+    ])
+    subprocess.run(["cp", "freshness/out/input.png", "static"])
+    return render_template('out.html')
+
 
 @app.route('/detectBanana', methods=['GET', 'POST'])
 def detect_banana():
