@@ -136,7 +136,7 @@ def detect_image():
     return render_template('out.html')
 
 @app.route('/detectOrange', methods=['GET', 'POST'])
-def detect_image():
+def detect_orange():
     global fruitc
     fruit = models[fruitc]
     capture()
