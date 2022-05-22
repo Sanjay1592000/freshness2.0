@@ -137,7 +137,7 @@ def detect_image():
 
 
 @app.route('/detectBanana', methods=['GET', 'POST'])
-def detect_image():
+def detect_banana():
     global fruitc
     fruit = models[fruitc]
     capture()
@@ -152,7 +152,7 @@ def detect_image():
 
 
 @app.route('/detectApple', methods=['GET', 'POST'])
-def detect_image():
+def detect_apple():
     global fruitc
     fruit = models[fruitc]
     capture()
